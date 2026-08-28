@@ -1,0 +1,9 @@
+<resources>
+    <string name="app_name">Room Monitor App</string>
+    <string-array name="buildings">
+        <item>1号館</item>
+        <item>2号館</item>
+        <item>3号館</item>
+        <item>4号館</item>
+    </string-array>
+</resources>

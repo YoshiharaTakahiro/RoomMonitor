@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="black">#FF000000</color>
+    <color name="white">#FFFFFFFF</color>
+
+    <!-- アプリのテーマカラー -->
+    <color name="primary">#1976D2</color>
+    <color name="on_primary">#FFFFFF</color>
+
+    <color name="secondary">#26A69A</color>
+    <color name="on_secondary">#FFFFFF</color>
+
+    <color name="tertiary">#F57C00</color>
+    <color name="on_tertiary">#FFFFFF</color>
+
+    <color name="surface">#F8F9FA</color>
+    <color name="on_surface">#1A1A1A</color>
+
+    <color name="surface_variant">#E3F2FD</color>
+    <color name="on_surface_variant">#424242</color>
+
+    <color name="error">#D32F2F</color>
+    <color name="on_error">#FFFFFF</color>
+</resources>
