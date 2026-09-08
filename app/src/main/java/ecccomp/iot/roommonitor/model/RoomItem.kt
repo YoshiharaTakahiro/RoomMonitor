@@ -1,9 +1,10 @@
 package ecccomp.iot.roommonitor.model
 
 data class RoomItem(
-    val imageUri: String?,
+    val id: Int,
     val name: String,
     val building: String,
     val remarks: String?,
-    val userId: String,
+    val image_uri: String?,
+    val user_id: Int,
 )

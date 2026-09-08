@@ -45,9 +45,9 @@ class RoomListActivity : AppCompatActivity() {
 
         // ダミーデータ ※WebAPIから教室情報が取得できれば不要
         val dummyData = listOf(
-            RoomItem(null, "3701教室", "3号館7F", "少人数教室", "70795"),
-            RoomItem(null, "3601教室", "3号館6F", "実習室", "70795"),
-            RoomItem(null, "3501教室", "3号館5F", "IoT部屋", "70795"),
+            RoomItem(1, "3701教室", "3号館", "少人数教室", null,1),
+            RoomItem(2, "3601教室", "3号館", "実習室", null,1),
+            RoomItem(3, "3501教室", "3号館", "IoT部屋", null,1),
         )
         roomItems.addAll(dummyData)
 
