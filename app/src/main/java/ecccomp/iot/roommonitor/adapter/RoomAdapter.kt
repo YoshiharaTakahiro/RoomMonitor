@@ -44,7 +44,7 @@ class RoomAdapter(private val dataSet: List<RoomItem>, private val onItemClick:(
         val item = dataSet[position]
 
         holder.roomName.text = item.name
-        item.image_uri?.let{
+        item.image_path?.let{
             // URIから画像を取得してImageViewに設定
 
         }

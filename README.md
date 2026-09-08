@@ -116,21 +116,20 @@ data class RoomItem(
     val name: String,
     val building: String,
     val remarks: String?,
-    val image_uri: String?,
+    val image_path: String?,
     val user_id: Int,
 )
 ```
 
-| フィールド | 意味 |
-| --- | --- |
-| `id` | 教室 ID |
+| フィールド | 意味              |
+| --- |-----------------|
+| `id` | 教室 ID           |
 | `name` | 教室名（例：`3701教室`） |
-| `building` | 号館（例：`3号館`） |
-| `remarks` | 備考（任意） |
-| `image_uri` | 教室写真の URI 文字列（任意） |
-| `user_id` | 登録ユーザー ID |
+| `building` | 号館（例：`3号館`）     |
+| `remarks` | 備考（任意）          |
+| `image_path` | 教室写真の保存パス（任意）   |
+| `user_id` | 登録ユーザー ID       |
 
-直近コミット `33b4935`「教室情報の項目を DB と連携しやすい名称に変更」で、`imageUri` → `image_uri`、`userId: String` → `user_id: Int` に変更し、`id: Int` を追加しています。**気温・湿度を表すエンティティはまだ存在しません。**
 
 ---
 
@@ -192,7 +191,7 @@ RoomMonitor/
 
 ## テスト
 
-自動生成された `ExampleUnitTest`（`2 + 2 = 4`）と `ExampleInstrumentedTest`（パッケージ名の確認）の2ファイルのみで、プロジェクト固有のテストは未整備です。
+プロジェクト固有のテストは未整備です。
 
 ---
 

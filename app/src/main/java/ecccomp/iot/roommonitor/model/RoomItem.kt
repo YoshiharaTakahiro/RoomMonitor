@@ -5,6 +5,6 @@ data class RoomItem(
     val name: String,
     val building: String,
     val remarks: String?,
-    val image_uri: String?,
+    val image_path: String?,
     val user_id: Int,
 )
