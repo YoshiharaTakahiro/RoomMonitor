@@ -12,6 +12,7 @@ import androidx.core.content.edit
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import com.google.android.material.floatingactionbutton.FloatingActionButton
+import ecccomp.iot.roommonitor.dialog.BleDeviceDialogFragment
 
 class RoomDetailActivity : AppCompatActivity() {
 
@@ -22,7 +23,16 @@ class RoomDetailActivity : AppCompatActivity() {
     private lateinit var roomImageView: ImageView
 
     private lateinit var bluetoothFab: FloatingActionButton
-    private lateinit var notificationFab: FloatingActionButton
+
+    // 線グラフ
+
+
+    // ブロードキャストレシーバー
+
+
+    // Bluetooth
+
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -40,18 +50,40 @@ class RoomDetailActivity : AppCompatActivity() {
         roomImageView = findViewById(R.id.roomDetailImageView)
 
         bluetoothFab = findViewById(R.id.bluetoothFab)
-        notificationFab = findViewById(R.id.notificationFab)
 
 
         bluetoothFab.setOnClickListener {
 
+            bluetoothFab.isEnabled = false
+
+            showDeviceDialog()
+            bluetoothFab.isEnabled = true
+
         }
 
-        notificationFab.setOnClickListener {
-
-        }
 
     }
+
+
+    // BLEデバイス一覧を表示するダイアログ
+    private fun showDeviceDialog() {
+
+        val dialog = BleDeviceDialogFragment().apply {
+
+            arguments = Bundle().apply {
+                putParcelableArrayList(
+                    "devices",
+                    ArrayList()
+                )
+            }
+        }
+
+        dialog.show(
+            supportFragmentManager,
+            "BleDeviceDialog"
+        )
+    }
+
 
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
         menuInflater.inflate(R.menu.action_menu, menu)
@@ -75,5 +107,12 @@ class RoomDetailActivity : AppCompatActivity() {
         }
     }
 
+    override fun onPause() {
+        super.onPause()
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+    }
 
 }

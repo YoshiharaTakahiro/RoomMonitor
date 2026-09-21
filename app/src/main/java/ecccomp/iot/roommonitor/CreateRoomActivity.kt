@@ -23,6 +23,7 @@ import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.google.android.material.snackbar.Snackbar
+import java.io.ByteArrayOutputStream
 import java.io.File
 
 class CreateRoomActivity : AppCompatActivity() {
@@ -55,6 +56,8 @@ class CreateRoomActivity : AppCompatActivity() {
 
         cameraFab = findViewById(R.id.cameraFab)
         createButton = findViewById(R.id.roomCreateButton)
+
+        // WebAPI接続インスタンス生成
 
 
         cameraFab.setOnClickListener {
@@ -89,9 +92,20 @@ class CreateRoomActivity : AppCompatActivity() {
                 return@setOnClickListener
             }
 
-            roomBitmap?.let{
-
+            val bitmap = roomBitmap
+            if(bitmap == null){
+                Snackbar.make(findViewById(R.id.main), "教室の写真を撮影してください", Snackbar.LENGTH_SHORT).show()
+                return@setOnClickListener
             }
+
+            // Bitmap → JPEGデータ
+            val outputStream = ByteArrayOutputStream()
+
+            bitmap.compress(
+                Bitmap.CompressFormat.JPEG,
+                90,
+                outputStream
+            )
 
         }
     }

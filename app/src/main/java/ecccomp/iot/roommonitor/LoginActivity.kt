@@ -35,8 +35,8 @@ class LoginActivity : AppCompatActivity() {
 
         // プレファレンスをチェックしてユーザ情報があれば、ログイン済みで一覧画面へ遷移する
         preferences = getSharedPreferences("RoomMonitor", MODE_PRIVATE)
-        val loginUserId = preferences.getString("userId", null)
-        if(loginUserId != null){
+        val loginUserId = preferences.getInt("userId", 0)
+        if(loginUserId != 0){
             val intent = Intent(this, RoomListActivity::class.java)
             startActivity(intent)
             finish() // ログイン後は自身の画面を終了させておく
@@ -65,9 +65,13 @@ class LoginActivity : AppCompatActivity() {
             // UserIDの存在とパスワードチェックを行う
 
 
+            // FCMトークン更新
+
+
             // ユーザIDをプレファレンスに保存
             preferences.edit {
-                putString("userId", userIdEdit.text.toString().trim())
+                // WebAPI連携まではユーザID：1でログインする
+                putInt("userId", 1)
             }
 
             val intent = Intent(this, RoomListActivity::class.java)
@@ -75,6 +79,7 @@ class LoginActivity : AppCompatActivity() {
             finish() // ログイン後は自身の画面を終了させておく
         }
 
+        // 「ユーザの作成はこちら」をタップで新規作成へ遷移する
         createUserTextView.setOnClickListener {
             val intent = Intent(this, CreateUserActivity::class.java)
             startActivity(intent)

@@ -4,29 +4,22 @@ import android.content.Intent
 import android.os.Bundle
 import android.view.Menu
 import android.view.MenuItem
-import android.widget.ImageButton
-import android.widget.Spinner
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.google.android.material.floatingactionbutton.FloatingActionButton
 import ecccomp.iot.roommonitor.adapter.RoomAdapter
 import ecccomp.iot.roommonitor.model.RoomItem
 import androidx.core.content.edit
 
 class RoomListActivity : AppCompatActivity() {
 
-    private lateinit var buildingSpinner: Spinner
-    private lateinit var searchButton: ImageButton
     private lateinit var roomRecyclerView: RecyclerView
-    private lateinit var roomAddFab: FloatingActionButton
 
     // 教室一覧データ
     private var roomItems = mutableListOf<RoomItem>()
-
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -38,10 +31,11 @@ class RoomListActivity : AppCompatActivity() {
             insets
         }
 
-        buildingSpinner = findViewById(R.id.buildingSearchSpinner)
-        searchButton = findViewById(R.id.buildingSearchButton)
         roomRecyclerView = findViewById(R.id.roomRecyclerView)
-        roomAddFab = findViewById(R.id.roomAddFab)
+
+        // 教室一覧情報の取得
+
+
 
         // ダミーデータ ※WebAPIから教室情報が取得できれば不要
         val dummyData = listOf(
@@ -64,19 +58,6 @@ class RoomListActivity : AppCompatActivity() {
 
         })
         roomRecyclerView.adapter = roomAdapter
-
-
-        searchButton.setOnClickListener {
-
-        }
-
-        roomAddFab.setOnClickListener {
-
-            val intent = Intent(this, CreateRoomActivity::class.java)
-            startActivity(intent)
-        }
-
-        // 教室一覧情報の取得
 
 
     }

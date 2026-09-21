@@ -111,25 +111,13 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginEnd="16dp"
+        android:layout_marginBottom="16dp"
         android:clickable="true"
         android:contentDescription="Bluetooth接続"
         app:backgroundTint="@color/primary"
-        app:layout_constraintBottom_toBottomOf="@+id/notificationFab"
-        app:layout_constraintEnd_toStartOf="@+id/notificationFab"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
         app:srcCompat="@android:drawable/stat_sys_data_bluetooth"
         app:tint="@color/on_primary" />
 
-    <com.google.android.material.floatingactionbutton.FloatingActionButton
-        android:id="@+id/notificationFab"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginEnd="16dp"
-        android:layout_marginBottom="16dp"
-        android:clickable="true"
-        android:contentDescription="通知設定"
-        app:backgroundTint="@color/secondary"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:srcCompat="@android:drawable/ic_popup_reminder"
-        app:tint="@color/on_secondary" />
 </androidx.constraintlayout.widget.ConstraintLayout>

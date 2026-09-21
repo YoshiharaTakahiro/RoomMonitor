@@ -1,14 +1,10 @@
 package ecccomp.iot.roommonitor
 
-import android.content.Intent
-import android.content.SharedPreferences
 import android.os.Bundle
 import android.widget.Button
 import android.widget.EditText
-import android.widget.Toast
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
-import androidx.core.content.edit
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import com.google.android.material.snackbar.Snackbar
@@ -70,16 +66,8 @@ class CreateUserActivity : AppCompatActivity() {
             // WebAPIを呼出しユーザ登録をおこなう
 
 
-            // ユーザIDをプレファレンスに保存
-            val preferences = getSharedPreferences("RoomMonitor", MODE_PRIVATE)
-            preferences.edit {
-                putString("userId", userIdEdit.text.toString().trim())
-            }
-
-            val intent = Intent(this, RoomListActivity::class.java)
-            // 戻るで作成画面、ログイン画面に戻れないようにスタックを削除して遷移を行う
-            intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
-            startActivity(intent)
+            // ユーザ作成後にログイン画面へ戻る
+            finish()
 
         }
     }
