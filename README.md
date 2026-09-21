@@ -1,10 +1,10 @@
 # RoomMonitor（Room Monitor App）
 
-学校の**教室**を号館ごとに登録・一覧・詳細表示し、各教室に設置したセンサーの**気温・湿度をグラフで可視化**することを目的とした、学生向け Android アプリです。学籍番号でログインし、担当する教室の環境を確認したり、しきい値を超えた際に通知を受け取ったりする使い方を想定しています。
+学校の**教室**を一覧・詳細表示し、各教室に設置したセンサーの**気温・湿度をグラフで可視化**することを目的とした、学生向け Android アプリです。学籍番号でログインし、担当する教室の環境を確認したり、しきい値を超えた際に通知を受け取ったりする使い方を想定しています。
 
 > ⚠️ **開発ステータス：UI スケルトン段階**
 > 現在実装されているのは画面遷移・入力バリデーション・カメラ撮影/リサイズ・BLE デバイス選択ダイアログの UI のみです。
-> ユーザー認証、WebAPI 連携、教室データの永続化、BLE スキャン/GATT 接続、**気温・湿度グラフ表示**、通知はすべて未実装（TODO スタブ）です。
+> ユーザー認証、教室データのWebAPI 連携、BLE スキャン/GATT 接続、**気温・湿度グラフ表示**、通知、NFC読込みはすべて未実装（TODO スタブ）です。
 
 ---
 
@@ -12,28 +12,28 @@
 
 ### 実装済み
 
-| 機能 | 補足 |
-| --- | --- |
-| ログイン画面 | 学籍番号（数値）＋パスワードの**空入力チェックのみ**。値の検証は行わず、成功時は `userId=1` 固定でログインする |
-| ユーザー新規作成画面 | 入力チェック＋パスワード一致確認のみ。登録処理は未実装 |
-| 自動ログイン | `SharedPreferences`（ファイル名 `RoomMonitor` / キー `userId`）の有無で判定 |
-| 教室一覧 | `RecyclerView` + `GridLayoutManager`（2列グリッド）+ `CardView`。現状は**ダミーデータ3件**を表示 |
-| 教室登録画面 | 教室名・号館・備考・写真の入力フォーム。登録ボタン押下時は撮影画像を JPEG に変換するのみで、保存・送信・画面遷移は未実装 |
-| カメラ撮影 | `ActivityResultContracts.TakePicture` ＋ `FileProvider`。EXIF 回転補正・正方形センタークロップ・512×512 リサイズを実装 |
-| 教室詳細画面 | 教室名・号館・備考・画像・グラフ領域のプレースホルダ表示（**常に固定のダミー値**。一覧からの選択内容は渡されない） |
+| 機能 | 補足                                                                                                                                                       |
+| --- |----------------------------------------------------------------------------------------------------------------------------------------------------------|
+| ログイン画面 | 学籍番号（数値）＋パスワードの**空入力チェックのみ**。値の検証は行わず、成功時は `userId=1` 固定でログインする                                                                                          |
+| ユーザー新規作成画面 | 入力チェック＋パスワード一致確認のみ。登録処理は未実装                                                                                                                              |
+| 自動ログイン | `SharedPreferences`（ファイル名 `RoomMonitor` / キー `userId`）の有無で判定                                                                                             |
+| 教室一覧 | `RecyclerView` + `GridLayoutManager`（2列グリッド）+ `CardView`。現状は**ダミーデータ3件**を表示                                                                              |
+| 教室登録画面 | 教室名・号館・備考・写真の入力フォーム。登録ボタン押下時は撮影画像を JPEG に変換するのみで、保存・送信・画面遷移は未実装                                                                                          |
+| カメラ撮影 | `ActivityResultContracts.TakePicture` ＋ `FileProvider`。EXIF 回転補正・正方形センタークロップ・512×512 リサイズを実装                                                             |
+| 教室詳細画面 | 教室名・号館・備考・画像・グラフ領域のプレースホルダ表示（**常に固定のダミー値**。一覧からの選択内容は渡されない）                                                                                              |
 | BLE デバイス選択ダイアログ | `BleDeviceDialogFragment`。詳細画面の Bluetooth FAB から `AlertDialog` でデバイス一覧を表示し、選択結果を `OnDeviceSelectedListener` で通知する枠組みを実装。**渡されるデバイス一覧は現状常に空**（実スキャン処理は未実装） |
-| ログアウト | オプションメニューから `userId` を削除しログイン画面へ戻る |
+| ログアウト | オプションメニューから `userId` を削除しログイン画面へ戻る                                                                                                                       |
 
 ### 未実装（ロードマップ / TODO）
 
 - 実際のユーザー認証・登録の WebAPI 連携
-- FCM トークン取得とプッシュ通知登録
-- 教室情報の永続化・一覧取得 API（`RoomItem` は DB 連携しやすい命名に変更済み）
+- 教室情報の一覧・詳細のWebAPI 連携
 - 教室一覧→詳細画面への選択データの引き渡し（現状は常にダミー表示）
-- 教室写真のアップロード・保存、および一覧/詳細での画像表示（`RoomAdapter` の `image_path` 読み込みは空実装）
-- BLE の実スキャン・GATT 接続（気温・湿度センサーとの通信）
+- FCM トークン取得とプッシュ通知登録
+- 教室写真の一覧/詳細での画像表示（`RoomAdapter` の `image_path` 読み込みは空実装）
+- BLE の実スキャン・GATT 接続（デバイスの教室登録）
 - **気温・湿度の時系列グラフ表示**（詳細画面の `roomChartView` は空の `View` プレースホルダ）
-- しきい値超過時の通知設定
+- 明るさのしきい値超過時の通知設定
 
 ---
 
@@ -49,12 +49,13 @@
 
 ```mermaid
 flowchart TD
-    Login[LoginActivity] -->|新規作成| CreateUser[CreateUserActivity]
+    Login[LoginActivity] -->|ユーザ作成| CreateUser[CreateUserActivity]
     Login -->|ログイン / 自動ログイン| RoomList[RoomListActivity]
-    CreateUser --> RoomList
+    CreateUser --> Login
     RoomList -->|項目タップ| RoomDetail[RoomDetailActivity]
     RoomList -->|ログアウト| Login
-    RoomDetail -->|Bluetooth FAB| BleDialog[BleDeviceDialogFragment]
+    RoomList -->|教室作成| CreateRoom[CreateRoomActivity]
+    RoomDetail -->|BLEデバイス検知| BleDialog[BleDeviceDialogFragment]
 ```
 
 ※教室登録画面（`CreateRoomActivity`）への導線は現在コード上には接続されていません。
@@ -95,7 +96,7 @@ flowchart TD
 
 ---
 
-## グラフ描画ライブラリについて（未選定）
+## グラフ描画ライブラリについて
 
 教室詳細画面（`activity_room_detail.xml`）には「部屋のセンサーデータ」ラベルと空の `View`（`roomChartView`）があるだけで、チャートライブラリはまだ導入されていません。候補：
 
@@ -104,7 +105,8 @@ flowchart TD
 | **MPAndroidChart** | View ベース。実績が豊富で、時系列の折れ線グラフに定番 |
 | **Vico** | View / Compose の両対応。比較的新しくメンテナンスが活発 |
 
-現行の View 構成を維持するなら MPAndroidChart / Vico のどちらでも、将来 Compose へ移行するなら Vico が候補になります。**選定は未決定です。**
+現行の View 構成を維持するなら MPAndroidChart / Vico のどちらでも、将来 Compose へ移行するなら Vico が候補になります。
+MPAndroidChartを採用
 
 ---
 
@@ -175,7 +177,7 @@ RoomMonitor/
 │       │   │   ├── adapter/RoomAdapter.kt   # 教室一覧の RecyclerView アダプタ
 │       │   │   ├── dialog/BleDeviceDialogFragment.kt  # BLEデバイス選択ダイアログ（スキャン処理は未実装）
 │       │   │   ├── api/          # WebAPI 連携用（`.gitkeep` のみ、未実装）
-│       │   │   ├── reciever/     # ブロードキャストレシーバー用（`.gitkeep` のみ、未実装。フォルダ名は receiver の誤記）
+│       │   │   ├── receiver/     # ブロードキャストレシーバー用（`.gitkeep` のみ、未実装）
 │       │   │   ├── service/      # サービス用（`.gitkeep` のみ、未実装）
 │       │   │   └── model/RoomItem.kt        # 教室データモデル
 │       │   └── res/
@@ -195,24 +197,16 @@ RoomMonitor/
 
 ---
 
-## テスト
-
-プロジェクト固有のテストは未整備です。
-
----
-
 ## 開発ロードマップ
 
 - [ ] ユーザー認証・登録の WebAPI 連携（ログイン / サインアップ）
-- [ ] FCM トークン取得とプッシュ通知登録
 - [ ] 教室 CRUD の永続化・一覧取得 API
+- [ ] FCM トークン取得とプッシュ通知登録
 - [ ] 教室一覧→詳細画面への選択データ引き渡し
-- [ ] 教室写真のアップロード・保存・表示
-- [ ] BLE の実スキャン・GATT 接続（気温・湿度）
 - [ ] **気温・湿度の時系列グラフ表示**（チャートライブラリの選定・導入）
-- [ ] しきい値超過時の通知設定
-- [ ] ユニット / UI テストの整備
-- [ ] Kotlin Gradle プラグインの適用など、ビルド設定の整理
+- [ ] 明るさのしきい値超過時の通知設定
+- [ ] BLE の実スキャン・GATT 接続（気温・湿度）
+- [ ] NFCタグ読込みで対応教室の表示
 
 ---
 
