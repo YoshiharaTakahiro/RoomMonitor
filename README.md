@@ -51,7 +51,6 @@
 flowchart TD
     Login[LoginActivity] -->|ユーザ作成| CreateUser[CreateUserActivity]
     Login -->|ログイン / 自動ログイン| RoomList[RoomListActivity]
-    CreateUser --> Login
     RoomList -->|項目タップ| RoomDetail[RoomDetailActivity]
     RoomList -->|ログアウト| Login
     RoomList -->|教室作成| CreateRoom[CreateRoomActivity]
