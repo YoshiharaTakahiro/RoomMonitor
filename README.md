@@ -3,8 +3,8 @@
 学校の**教室**を号館ごとに登録・一覧・詳細表示し、各教室に設置したセンサーの**気温・湿度をグラフで可視化**することを目的とした、学生向け Android アプリです。学籍番号でログインし、担当する教室の環境を確認したり、しきい値を超えた際に通知を受け取ったりする使い方を想定しています。
 
 > ⚠️ **開発ステータス：UI スケルトン段階**
-> 現在実装されているのは画面遷移・入力バリデーション・カメラ撮影/リサイズのみです。
-> ユーザー認証、WebAPI 連携、教室データの永続化、BLE センサー連携、**気温・湿度グラフ表示**、通知はすべて未実装（TODO スタブ）です。
+> 現在実装されているのは画面遷移・入力バリデーション・カメラ撮影/リサイズ・BLE デバイス選択ダイアログの UI のみです。
+> ユーザー認証、WebAPI 連携、教室データの永続化、BLE スキャン/GATT 接続、**気温・湿度グラフ表示**、通知はすべて未実装（TODO スタブ）です。
 
 ---
 
@@ -14,26 +14,26 @@
 
 | 機能 | 補足 |
 | --- | --- |
-| ログイン画面 | 学籍番号（数値）＋パスワードの**入力チェックのみ**。実際の認証は未実装 |
+| ログイン画面 | 学籍番号（数値）＋パスワードの**空入力チェックのみ**。値の検証は行わず、成功時は `userId=1` 固定でログインする |
 | ユーザー新規作成画面 | 入力チェック＋パスワード一致確認のみ。登録処理は未実装 |
 | 自動ログイン | `SharedPreferences`（ファイル名 `RoomMonitor` / キー `userId`）の有無で判定 |
 | 教室一覧 | `RecyclerView` + `GridLayoutManager`（2列グリッド）+ `CardView`。現状は**ダミーデータ3件**を表示 |
-| 号館での絞り込み UI | スピナー＋検索ボタンを配置。**検索処理は空実装** |
-| 教室登録画面 | 教室名・号館・備考・写真の入力フォーム |
+| 教室登録画面 | 教室名・号館・備考・写真の入力フォーム。登録ボタン押下時は撮影画像を JPEG に変換するのみで、保存・送信・画面遷移は未実装 |
 | カメラ撮影 | `ActivityResultContracts.TakePicture` ＋ `FileProvider`。EXIF 回転補正・正方形センタークロップ・512×512 リサイズを実装 |
-| 教室詳細画面 | 教室名・号館・備考・画像・グラフ領域のプレースホルダ表示 |
+| 教室詳細画面 | 教室名・号館・備考・画像・グラフ領域のプレースホルダ表示（**常に固定のダミー値**。一覧からの選択内容は渡されない） |
+| BLE デバイス選択ダイアログ | `BleDeviceDialogFragment`。詳細画面の Bluetooth FAB から `AlertDialog` でデバイス一覧を表示し、選択結果を `OnDeviceSelectedListener` で通知する枠組みを実装。**渡されるデバイス一覧は現状常に空**（実スキャン処理は未実装） |
 | ログアウト | オプションメニューから `userId` を削除しログイン画面へ戻る |
 
 ### 未実装（ロードマップ / TODO）
 
 - 実際のユーザー認証・登録の WebAPI 連携
 - FCM トークン取得とプッシュ通知登録
-- 教室情報の永続化・一覧取得 API（`RoomItem` は直近コミットで DB 連携しやすい命名に変更済み）
-- 教室写真のアップロード・保存
-- BLE センサー（気温・湿度）との接続（詳細画面の Bluetooth FAB）
+- 教室情報の永続化・一覧取得 API（`RoomItem` は DB 連携しやすい命名に変更済み）
+- 教室一覧→詳細画面への選択データの引き渡し（現状は常にダミー表示）
+- 教室写真のアップロード・保存、および一覧/詳細での画像表示（`RoomAdapter` の `image_path` 読み込みは空実装）
+- BLE の実スキャン・GATT 接続（気温・湿度センサーとの通信）
 - **気温・湿度の時系列グラフ表示**（詳細画面の `roomChartView` は空の `View` プレースホルダ）
-- 通知設定（詳細画面の通知 FAB）
-- 号館での検索処理
+- しきい値超過時の通知設定
 
 ---
 
@@ -43,9 +43,9 @@
 | --- | --- | --- | --- |
 | ログイン | `LoginActivity`（LAUNCHER / `exported="true"`） | 学籍番号ログイン。自動ログイン判定 | 教室一覧 / ユーザー作成 |
 | ユーザー作成 | `CreateUserActivity` | アカウント新規作成 | 教室一覧 |
-| 教室一覧 | `RoomListActivity` | 教室のグリッド表示・号館絞り込み | 教室詳細 / 教室登録 |
+| 教室一覧 | `RoomListActivity` | 教室のグリッド表示（ダミーデータ3件） | 教室詳細 / 教室登録（未接続） |
 | 教室登録 | `CreateRoomActivity` | 教室情報の入力・写真撮影 | （登録後 未実装） |
-| 教室詳細 | `RoomDetailActivity` | 教室情報とセンサーデータの表示。BLE / 通知 FAB はスタブ | — |
+| 教室詳細 | `RoomDetailActivity` | 教室情報とセンサーデータの表示。BLE デバイス選択ダイアログを起動可能（スキャンは未実装） | — |
 
 ```mermaid
 flowchart TD
@@ -53,9 +53,11 @@ flowchart TD
     Login -->|ログイン / 自動ログイン| RoomList[RoomListActivity]
     CreateUser --> RoomList
     RoomList -->|項目タップ| RoomDetail[RoomDetailActivity]
-    RoomList -->|FAB| CreateRoom[CreateRoomActivity]
     RoomList -->|ログアウト| Login
+    RoomDetail -->|Bluetooth FAB| BleDialog[BleDeviceDialogFragment]
 ```
+
+※教室登録画面（`CreateRoomActivity`）への導線は現在コード上には接続されていません。
 
 ---
 
@@ -67,7 +69,7 @@ flowchart TD
 | ビルド | Android Gradle Plugin 9.1.1 / Gradle 9.3.1（wrapper, `-bin`）/ Foojay Resolver Convention 1.0.0 |
 | SDK | `compileSdk` 37 / `minSdk` 27（Android 8.1）/ `targetSdk` 36 |
 | JDK | ソース・ターゲット Java 11、Gradle デーモン toolchain 21 |
-| UI | Android View システム（**Jetpack Compose 不使用**）、Material 3（`Theme.Material3.DayNight`）、`ConstraintLayout`、`CardView`、`RecyclerView`、`FloatingActionButton` |
+| UI | Android View システム（**Jetpack Compose 不使用**）、Material 3（`Theme.Material3.DayNight`）、`ConstraintLayout`、`CardView`、`RecyclerView`、`FloatingActionButton`、`DialogFragment`（`AlertDialog`） |
 | 永続化 | `SharedPreferences` のみ（キー `userId`）。**Room は未使用**（プロジェクト名の "Room" は永続化ライブラリではなく物理的な「教室」の意） |
 | ネットワーク | 未導入（Retrofit / OkHttp なし、`INTERNET` パーミッションなし） |
 
@@ -169,8 +171,12 @@ RoomMonitor/
 │       │   │   ├── CreateUserActivity.kt    # ユーザー新規作成
 │       │   │   ├── RoomListActivity.kt      # 教室一覧（2列グリッド・ダミーデータ）
 │       │   │   ├── CreateRoomActivity.kt    # 教室登録・カメラ撮影・画像リサイズ
-│       │   │   ├── RoomDetailActivity.kt    # 教室詳細・センサー / 通知 FAB（スタブ）
+│       │   │   ├── RoomDetailActivity.kt    # 教室詳細・BLE ダイアログ起動
 │       │   │   ├── adapter/RoomAdapter.kt   # 教室一覧の RecyclerView アダプタ
+│       │   │   ├── dialog/BleDeviceDialogFragment.kt  # BLEデバイス選択ダイアログ（スキャン処理は未実装）
+│       │   │   ├── api/          # WebAPI 連携用（`.gitkeep` のみ、未実装）
+│       │   │   ├── reciever/     # ブロードキャストレシーバー用（`.gitkeep` のみ、未実装。フォルダ名は receiver の誤記）
+│       │   │   ├── service/      # サービス用（`.gitkeep` のみ、未実装）
 │       │   │   └── model/RoomItem.kt        # 教室データモデル
 │       │   └── res/
 │       │       ├── layout/            # activity_login / create_user / room_list /
@@ -199,9 +205,10 @@ RoomMonitor/
 
 - [ ] ユーザー認証・登録の WebAPI 連携（ログイン / サインアップ）
 - [ ] FCM トークン取得とプッシュ通知登録
-- [ ] 教室 CRUD の永続化・一覧取得 API（号館での検索処理を含む）
-- [ ] 教室写真のアップロード・保存
-- [ ] BLE センサー（気温・湿度）との接続
+- [ ] 教室 CRUD の永続化・一覧取得 API
+- [ ] 教室一覧→詳細画面への選択データ引き渡し
+- [ ] 教室写真のアップロード・保存・表示
+- [ ] BLE の実スキャン・GATT 接続（気温・湿度）
 - [ ] **気温・湿度の時系列グラフ表示**（チャートライブラリの選定・導入）
 - [ ] しきい値超過時の通知設定
 - [ ] ユニット / UI テストの整備

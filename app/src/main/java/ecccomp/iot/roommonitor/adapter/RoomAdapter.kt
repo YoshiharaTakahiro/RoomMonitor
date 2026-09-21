@@ -5,11 +5,9 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
-import androidx.core.net.toUri
 import androidx.recyclerview.widget.RecyclerView
 import ecccomp.iot.roommonitor.R
 import ecccomp.iot.roommonitor.model.RoomItem
-import kotlinx.coroutines.runInterruptible
 
 class RoomAdapter(private val dataSet: List<RoomItem>, private val onItemClick:(RoomItem) -> Unit) :
     RecyclerView.Adapter<RoomAdapter.ViewHolder> (){
